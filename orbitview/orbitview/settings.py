@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +82,11 @@ WSGI_APPLICATION = 'orbitview.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv("DB_ENGINE"),
+        'NAME': os.getenv("DB_NAME"),
+        'PORT': os.getenv("DB_PORT"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
     }
 }
 
@@ -136,4 +141,17 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+DJOSER = {
+    "USER_CREATE_SERIALIZER": "users.serializers.CustomUserCreateSerializer",
+    "USER_SERIALIZER": "users.serializers.CustomUserSerializer",
+    "LOGIN_FIELD": "email",
+    "USER_ID_FIELD": "username",
+    "SEND_ACTIVATION_EMAIL": False,
+    "SERIALIZERS": {},
 }
