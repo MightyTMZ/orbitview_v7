@@ -6,4 +6,5 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
     path("api/users/", include("users.urls")),
+    path("api/resources/", include("resources.urls")),
 ]
