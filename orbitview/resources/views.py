@@ -12,6 +12,7 @@ class CategoryListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title__istartswith']
+    pagination_class = None # no pagination here
 
 # SkillTag Views
 class SkillTagListCreateView(generics.ListCreateAPIView):
@@ -33,7 +34,13 @@ class ProgramListCreateView(generics.ListCreateAPIView):
 class HostListCreateView(generics.ListCreateAPIView):
     queryset = Host.objects.all()
     serializer_class = HostSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+
+    search_fields = [
+        'name__istartswith',
+    ]
 
 class HostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Host.objects.all()
@@ -45,6 +52,15 @@ class EventListCreateView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+    filter_fields = ['start_time', 'end_time', 'host']
+
+    search_fields = [
+        'title__istartswith',
+    ]
+
 
 class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
