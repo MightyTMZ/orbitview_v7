@@ -5,36 +5,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles } from "lucide-react";
 import { ResourceCard } from "@/components/resource-card";
-import { Event, Program, Competition } from "@/lib/types";
+import { Event, Program, Competition, Category } from "@/lib/types";
 import { CategoryFilter } from "@/components/category-filter";
 import { getEvents, getPrograms, getCompetitions } from "@/lib/api";
 
 export default function DiscoveryPage() {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [programs, setPrograms] = useState<Program[]>([]);
-  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [allPrograms, setAllPrograms] = useState<Program[]>([]);
+  const [allCompetitions, setAllCompetitions] = useState<Competition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchResources();
-  }, [selectedCategories]);
+    fetchAllResources();
+  }, []);
 
-  const fetchResources = async () => {
+  const fetchAllResources = async () => {
     try {
       setIsLoading(true);
-      const [eventsResponse, programsResponse, competitionsResponse] = await Promise.all([
-        getEvents(1, 10, selectedCategories),
-        getPrograms(1, 10, selectedCategories),
-        getCompetitions(1, 10, selectedCategories)
-      ]);
-      setEvents(eventsResponse.results);
-      setPrograms(programsResponse.results);
-      setCompetitions(competitionsResponse.results);
+      const [eventsResponse, programsResponse, competitionsResponse] =
+        await Promise.all([
+          getEvents(1, 100), // Fetch more items per page
+          getPrograms(1, 100),
+          getCompetitions(1, 100),
+        ]);
+      setAllEvents(eventsResponse.results);
+      setAllPrograms(programsResponse.results);
+      setAllCompetitions(competitionsResponse.results);
     } catch (error) {
-      console.error('Failed to fetch resources:', error);
+      console.error("Failed to fetch resources:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,9 +47,27 @@ export default function DiscoveryPage() {
     setTimeout(() => setIsSearching(false), 1500);
   };
 
+  const filterResources = (
+    resources: (Competition | Program | Event)[],
+    categories: string[]
+  ) => {
+    if (categories.length === 0) return resources;
+    return resources.filter((resource) =>
+      resource.category?.some((cat: Category) => categories.includes(cat.title))
+    );
+  };
+
   const renderResources = () => {
+    // Filter resources based on selected categories
+    const filteredEvents = filterResources(allEvents, selectedCategories);
+    const filteredPrograms = filterResources(allPrograms, selectedCategories);
+    const filteredCompetitions = filterResources(
+      allCompetitions,
+      selectedCategories
+    );
+
     const allResources = [
-      ...events.map(event => ({
+      ...filteredEvents.map((event) => ({
         resource: {
           id: event.id.toString(),
           title: event.title,
@@ -57,41 +76,70 @@ export default function DiscoveryPage() {
           endDate: event.end_time,
           location: event.location,
           imageUrl: event.cover_image,
-          tags: event.category? event.category.map(c => c.title) : [],          
+          tags: event.category
+            ? event.category.map((c: Category) => c.title)
+            : [],
           organizerName: event.host.name,
           url: event.url,
-          categories: event.category
+          categories: event.category,
         },
-        type: "event" as const
+        type: "event" as const,
       })),
-      ...programs.map(program => ({
+      ...filteredPrograms.map((program) => ({
         resource: {
           id: program.id.toString(),
           title: program.title,
           description: program.description,
           duration: program.duration_description,
           imageUrl: program.cover_image,
-          tags: program.category? program.category.map(c => c.title) : [],          organizerName: program.host.name,
+          tags: program.category
+            ? program.category.map((c: Category) => c.title)
+            : [],
+          organizerName: program.host.name,
           url: program.url,
-          categories: program.category
+          categories: program.category,
         },
-        type: "program" as const
+        type: "program" as const,
       })),
-      ...competitions.map(competition => ({
+      ...filteredCompetitions.map((competition) => ({
         resource: {
           id: competition.id.toString(),
           title: competition.title,
           description: competition.description,
           startDate: competition.start_date,
           endDate: competition.end_date,
-          tags: [...competition.tags.map(t => t.name), ...competition.category.map(c => c.title)],
+          tags: [
+            ...competition.category.map((c: Category) => c.title),
+            ...competition.category.map((c: Category) => c.title),
+          ],
           difficulty: competition.difficulty_level,
           url: competition.url,
-          categories: competition.category
+          categories: competition.category,
         },
-        type: "competition" as const
-      }))
+        type: "competition" as const,
+      })),
     ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
+
+    // Filter by search query if present
+    if (query) {
+      const searchTerms = query.toLowerCase().split(" ");
+      return allResources
+        .filter(({ resource }) =>
+          searchTerms.some(
+            (term) =>
+              resource.title.toLowerCase().includes(term) ||
+              resource.description.toLowerCase().includes(term) ||
+              resource.tags.some((tag) => tag.toLowerCase().includes(term))
+          )
+        )
+        .map(({ resource, type }) => (
+          <ResourceCard
+            key={`${type}-${resource.id}`}
+            resource={resource}
+            type={type}
+          />
+        ));
+    }
 
     return allResources.map(({ resource, type }) => (
       <ResourceCard
@@ -106,11 +154,14 @@ export default function DiscoveryPage() {
     <div className="min-h-screen pt-24 pb-16">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Discover Your Next Opportunity</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            Discover Your Next Opportunity
+          </h1>
           <p className="text-lg text-muted-foreground mb-8">
-            Use natural language to find events, competitions, and programs that match your interests and goals.
+            (Coming soon!) Use natural language to find events, competitions,
+            and programs that match your interests and goals.
           </p>
-          
+
           <div className="flex gap-3 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
@@ -123,8 +174,8 @@ export default function DiscoveryPage() {
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
             </div>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleSearch}
               disabled={isSearching || !query}
               className="min-w-[120px]"
@@ -137,31 +188,35 @@ export default function DiscoveryPage() {
             </Button>
           </div>
 
+          <p className="text-sm text-start mb-8">
+            Click to select multiple categories and click again to unselect.
+          </p>
           <CategoryFilter
             selectedCategories={selectedCategories}
             onCategoryChange={setSelectedCategories}
           />
-          
-          <p className="text-sm text-muted-foreground mt-3">
+
+          {/*<p className="text-sm text-muted-foreground mt-3">
             Powered by AI to understand your needs and find the perfect matches
-          </p>
+          </p>*/}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          {isLoading ? (
-            Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-card rounded-lg animate-pulse h-[400px]">
-                <div className="h-48 bg-muted rounded-t-lg" />
-                <div className="p-4 space-y-3">
-                  <div className="h-6 bg-muted rounded-md w-3/4" />
-                  <div className="h-4 bg-muted rounded-md w-1/2" />
-                  <div className="h-4 bg-muted rounded-md w-full" />
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-card rounded-lg animate-pulse h-[400px]"
+                >
+                  <div className="h-48 bg-muted rounded-t-lg" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-6 bg-muted rounded-md w-3/4" />
+                    <div className="h-4 bg-muted rounded-md w-1/2" />
+                    <div className="h-4 bg-muted rounded-md w-full" />
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            renderResources()
-          )}
+              ))
+            : renderResources()}
         </div>
       </div>
     </div>

@@ -55,7 +55,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
 
   return (
     <ScrollArea className="w-full whitespace-nowrap pb-4">
-      <div className="flex space-x-2 p-1">
+      <div className="flex space-x-2 p-1 flex-wrap gap-2">
         {categories.map((category) => (
           <Badge
             key={category.id}

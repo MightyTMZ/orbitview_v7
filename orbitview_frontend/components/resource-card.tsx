@@ -11,12 +11,14 @@ type ResourceCardProps = {
   type: "event" | "competition" | "program";
 };
 
-export function ResourceCard({ resource, type }: ResourceCardProps) {
+export function ResourceCard({ resource }: ResourceCardProps) {
+// export function ResourceCard({ resource, type }: ResourceCardProps) {
+
   // Default image if none provided
   const imageUrl = resource.imageUrl || "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   
   // Determine route based on type
-  const href = `/${type}s/${resource.id}`;
+  // const href = `/${type}s/${resource.id}`;
   
   // Date display logic
   let dateDisplay = "";
@@ -95,7 +97,7 @@ export function ResourceCard({ resource, type }: ResourceCardProps) {
           By {resource.organizerName}
         </span>
         
-        <Link href={href} className="text-lightHighlight dark:text-darkHighlight hover:underline flex items-center gap-1 text-sm font-medium">
+        <Link href={resource.url} className="text-lightHighlight dark:text-darkHighlight hover:underline flex items-center gap-1 text-sm font-medium">
           View details
           <ExternalLink className="h-3 w-3" />
         </Link>
