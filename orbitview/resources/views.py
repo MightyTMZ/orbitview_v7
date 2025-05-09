@@ -17,12 +17,17 @@ from .serializers import (
     CompetitionSerializer,
     ChallengeSubmissionSerializer
 )
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 # Category Views
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title__istartswith']
 
 # SkillTag Views
 class SkillTagListCreateView(generics.ListCreateAPIView):
@@ -34,6 +39,11 @@ class ProgramListCreateView(generics.ListCreateAPIView):
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+    search_fields = [
+        'title__istartswith',
+    ]
 
 # Host Views
 class HostListCreateView(generics.ListCreateAPIView):
