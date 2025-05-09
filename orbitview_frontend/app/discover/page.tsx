@@ -12,7 +12,7 @@ import { getEvents, getPrograms, getCompetitions } from "@/lib/api";
 export default function DiscoveryPage() {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]); // Use category IDs
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [allPrograms, setAllPrograms] = useState<Program[]>([]);
   const [allCompetitions, setAllCompetitions] = useState<Competition[]>([]);
@@ -27,7 +27,7 @@ export default function DiscoveryPage() {
       setIsLoading(true);
       const [eventsResponse, programsResponse, competitionsResponse] =
         await Promise.all([
-          getEvents(1, 100), // Fetch more items per page
+          getEvents(1, 100),
           getPrograms(1, 100),
           getCompetitions(1, 100),
         ]);
@@ -43,22 +43,21 @@ export default function DiscoveryPage() {
 
   const handleSearch = () => {
     setIsSearching(true);
-    // Simulate search delay
     setTimeout(() => setIsSearching(false), 1500);
   };
 
   const filterResources = (
     resources: (Competition | Program | Event)[],
-    categories: string[]
+    categoryIds: number[]
   ) => {
-    if (categories.length === 0) return resources;
+    if (categoryIds.length === 0) return resources;
+    const categorySet = new Set(categoryIds);
     return resources.filter((resource) =>
-      resource.category?.some((cat: Category) => categories.includes(cat.title))
+      resource.category?.some((cat: Category) => categorySet.has(cat.id))
     );
   };
 
   const renderResources = () => {
-    // Filter resources based on selected categories
     const filteredEvents = filterResources(allEvents, selectedCategories);
     const filteredPrograms = filterResources(allPrograms, selectedCategories);
     const filteredCompetitions = filterResources(
@@ -76,9 +75,7 @@ export default function DiscoveryPage() {
           endDate: event.end_time,
           location: event.location,
           imageUrl: event.cover_image,
-          tags: event.category
-            ? event.category.map((c: Category) => c.title)
-            : [],
+          tags: event.category?.map((c) => c.title) || [],
           organizerName: event.host.name,
           url: event.url,
           categories: event.category,
@@ -92,9 +89,7 @@ export default function DiscoveryPage() {
           description: program.description,
           duration: program.duration_description,
           imageUrl: program.cover_image,
-          tags: program.category
-            ? program.category.map((c: Category) => c.title)
-            : [],
+          tags: program.category?.map((c) => c.title) || [],
           organizerName: program.host.name,
           url: program.url,
           categories: program.category,
@@ -108,10 +103,7 @@ export default function DiscoveryPage() {
           description: competition.description,
           startDate: competition.start_date,
           endDate: competition.end_date,
-          tags: [
-            ...competition.category.map((c: Category) => c.title),
-            ...competition.category.map((c: Category) => c.title),
-          ],
+          tags: competition.category?.map((c) => c.title) || [],
           difficulty: competition.difficulty_level,
           url: competition.url,
           categories: competition.category,
@@ -120,7 +112,6 @@ export default function DiscoveryPage() {
       })),
     ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
 
-    // Filter by search query if present
     if (query) {
       const searchTerms = query.toLowerCase().split(" ");
       return allResources
@@ -195,10 +186,6 @@ export default function DiscoveryPage() {
             selectedCategories={selectedCategories}
             onCategoryChange={setSelectedCategories}
           />
-
-          {/*<p className="text-sm text-muted-foreground mt-3">
-            Powered by AI to understand your needs and find the perfect matches
-          </p>*/}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
