@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from datetime import datetime
 import string
 import random
@@ -29,6 +31,33 @@ class Host(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Reaction(models.Model):
+    REACTION_CHOICES = [
+        ("like", "Like"),
+        ("dislike", "Dislike"),
+    ]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reaction = models.CharField(max_length=10, choices=REACTION_CHOICES)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'content_type', 'object_id')  # one reaction per user per resource
+
+    def __str__(self):
+        return f"{self.user.username} - {self.reaction} - {self.content_object}"
+    
+    def get_likes_count(self):
+        return Reaction.objects.filter(
+            content_type=ContentType.objects.get_for_model(self),
+            object_id=self.id,
+            reaction='like'
+        ).count()
+
 
 
 class Event(models.Model):
