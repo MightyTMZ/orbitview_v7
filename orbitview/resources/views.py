@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from .models import (
     Category,
     SkillTag,
+    Program,
     Host,
     Event,
     Competition,
@@ -10,6 +11,7 @@ from .models import (
 from .serializers import (
     CategorySerializer,
     SkillTagSerializer,
+    ProgramSerializer,
     HostSerializer,
     EventSerializer,
     CompetitionSerializer,
@@ -26,6 +28,11 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 class SkillTagListCreateView(generics.ListCreateAPIView):
     queryset = SkillTag.objects.all()
     serializer_class = SkillTagSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class ProgramListCreateView(generics.ListCreateAPIView):
+    queryset = Program.objects.all()
+    serializer_class = ProgramSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 # Host Views
@@ -49,6 +56,12 @@ class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class ProgramDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Program.objects.all()
+    serializer_class = ProgramSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 # Competition Views
 class CompetitionListCreateView(generics.ListCreateAPIView):

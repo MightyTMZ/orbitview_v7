@@ -16,4 +16,7 @@ urlpatterns = [
     
     path("submissions/", views.ChallengeSubmissionListCreateView.as_view(), name="submission-list"),
     path("submissions/<int:pk>/", views.ChallengeSubmissionDetailView.as_view(), name="submission-detail"),
+    
+    path("programs/", views.ProgramListCreateView.as_view(), name="program-list"),
+    path("programs/<int:pk>/", views.ProgramDetailView.as_view(), name="program-detail"),
 ]

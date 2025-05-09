@@ -96,6 +96,7 @@ class Program(models.Model):
     host = models.ForeignKey(Host, on_delete=models.CASCADE)
     url = models.URLField()
     duration_description = models.CharField(max_length=255)
+    cover_image = models.ImageField(upload_to="media/competitions/cover_images", null=True, blank=True)
 
     def __str__(self):
         return self.title

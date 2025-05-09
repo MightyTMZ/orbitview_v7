@@ -5,6 +5,7 @@ from .models import (
     Host,
     Event,
     Competition,
+    Program,  
     ChallengeSubmission
 )
 from django.contrib.auth import get_user_model
@@ -12,19 +13,41 @@ from django.contrib.auth import get_user_model
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'title']
+        fields = [
+            'id', 
+            'title',
+        ]
 
 
 class SkillTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillTag
-        fields = ['id', 'name']
+        fields = [
+            'id', 
+            'name',
+        ]
 
 
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host
         fields = ['id', 'name', 'slogan', 'bio', 'cover_image']
+
+
+class ProgramSerializer(serializers.ModelSerializer):
+    host = HostSerializer(read_only=True)
+    
+    class Meta:
+        model = Program
+        fields = [
+            'id', 
+            'title', 
+            'description', 
+            'host',
+            'url',
+            'duration_description',
+            'cover_image',
+        ]
 
 
 class EventSerializer(serializers.ModelSerializer):
