@@ -6,13 +6,10 @@ export interface User {
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-  };
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
 }
 
 export interface ApiResponse<T> {
@@ -35,46 +32,53 @@ export interface Category {
   title: string;
 }
 
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate?: string;
-  location?: string;
-  imageUrl?: string;
-  tags: string[];
-  organizerName: string;
-  url?: string;
-  categories?: Category[];
+export interface Host {
+  id: number;
+  name: string;
+  slogan: string | null;
+  bio: string;
+  cover_image: string;
 }
 
-export interface Competition {
-  id: string;
+export interface Tag {
+  id: number;
+  name: string;
+}
+
+export interface Event {
+  id: number;
   title: string;
   description: string;
-  startDate: string;
-  endDate: string;
-  prizes?: string[];
-  eligibility?: string;
-  imageUrl?: string;
-  tags: string[];
-  organizerName: string;
-  url?: string;
-  categories?: Category[];
+  host: Host;
+  url: string;
+  location: string;
+  start_time: string;
+  end_time: string;
+  category: Category[];
+  cover_image: string | null;
 }
 
 export interface Program {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  duration: string;
-  startDate?: string;
-  location?: string;
-  format?: string;
-  imageUrl?: string;
-  tags: string[];
-  organizerName: string;
-  url?: string;
-  categories?: Category[];
+  host: Host;
+  url: string;
+  duration_description: string;
+  cover_image: string | null;
+  category: Category[];
+}
+
+export interface Competition {
+  id: number;
+  title: string;
+  description: string;
+  organizer: number;
+  url: string;
+  tags: Tag[];
+  difficulty_level: string;
+  category: Category[];
+  start_date: string;
+  end_date: string;
+  created_at: string;
 }

@@ -2,7 +2,7 @@ export const APP_NAME = "Launchpad";
 
 export const ROUTES = {
   HOME: "/",
-  DISCOVERY: "/discovery",
+  DISCOVERY: "/discover",
   LOGIN: "/login",
   REGISTER: "/register",
   PROFILE: "/profile",

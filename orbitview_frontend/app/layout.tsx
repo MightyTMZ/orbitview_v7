@@ -24,7 +24,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow">{children}</main>
+            <main className="flex-grow container mx-auto px-6 md:px-8 lg:px-12">{children}</main>
             <Footer />
           </div>
         </ThemeProvider>

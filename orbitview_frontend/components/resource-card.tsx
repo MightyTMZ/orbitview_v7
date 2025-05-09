@@ -48,11 +48,11 @@ export function ResourceCard({ resource, type }: ResourceCardProps) {
           <CardTitle className="text-xl line-clamp-2">{resource.title}</CardTitle>
         </div>
         <div className="flex flex-wrap gap-1 mt-2">
-          {resource.tags.slice(0, 3).map((tag) => (
+          {resource.tags? <>{resource.tags.slice(0, 3).map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs">
               {tag}
             </Badge>
-          ))}
+          ))}</> : <></>}
           {resource.tags.length > 3 && (
             <Badge variant="outline" className="text-xs">
               +{resource.tags.length - 3}

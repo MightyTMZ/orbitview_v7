@@ -1,9 +1,8 @@
-import { ApiResponse, PaginatedResponse, Event, Competition, Program, LoginCredentials, RegisterCredentials, User } from './types';
+import { ApiResponse, PaginatedResponse, Event, Competition, Program, LoginCredentials, RegisterCredentials, User, Category } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.orbitview.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  // In a real implementation, we would get the token from localStorage or a cookie
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   
   const headers = {
@@ -25,7 +24,6 @@ async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Pr
   return response.json();
 }
 
-// Auth functions
 export async function login(credentials: LoginCredentials): Promise<ApiResponse<{ user: User; token: string }>> {
   return fetchWithAuth('/auth/login', {
     method: 'POST',
@@ -50,45 +48,45 @@ export async function getCurrentUser(): Promise<ApiResponse<User>> {
   return fetchWithAuth('/auth/me');
 }
 
-// Resource functions
-export async function getEvents(page = 1, limit = 10, filters?: Record<string, any>): Promise<PaginatedResponse<Event>> {
-  const queryParams = new URLSearchParams({
+export async function getEvents(page = 1, pageSize = 10, categories?: number[]): Promise<PaginatedResponse<Event>> {
+  const params = new URLSearchParams({
     page: page.toString(),
-    limit: limit.toString(),
-    ...(filters || {}),
+    page_size: pageSize.toString(),
   });
-  
-  return fetchWithAuth(`/events?${queryParams.toString()}`);
+
+  if (categories && categories.length > 0) {
+    categories.forEach(id => params.append('category', id.toString()));
+  }
+
+  return fetchWithAuth(`/resources/events/?${params.toString()}`);
 }
 
-export async function getEvent(id: string): Promise<ApiResponse<Event>> {
-  return fetchWithAuth(`/events/${id}`);
-}
-
-export async function getCompetitions(page = 1, limit = 10, filters?: Record<string, any>): Promise<PaginatedResponse<Competition>> {
-  const queryParams = new URLSearchParams({
+export async function getPrograms(page = 1, pageSize = 10, categories?: number[]): Promise<PaginatedResponse<Program>> {
+  const params = new URLSearchParams({
     page: page.toString(),
-    limit: limit.toString(),
-    ...(filters || {}),
+    page_size: pageSize.toString(),
   });
-  
-  return fetchWithAuth(`/competitions?${queryParams.toString()}`);
+
+  if (categories && categories.length > 0) {
+    categories.forEach(id => params.append('category', id.toString()));
+  }
+
+  return fetchWithAuth(`/resources/programs/?${params.toString()}`);
 }
 
-export async function getCompetition(id: string): Promise<ApiResponse<Competition>> {
-  return fetchWithAuth(`/competitions/${id}`);
-}
-
-export async function getPrograms(page = 1, limit = 10, filters?: Record<string, any>): Promise<PaginatedResponse<Program>> {
-  const queryParams = new URLSearchParams({
+export async function getCompetitions(page = 1, pageSize = 10, categories?: number[]): Promise<PaginatedResponse<Competition>> {
+  const params = new URLSearchParams({
     page: page.toString(),
-    limit: limit.toString(),
-    ...(filters || {}),
+    page_size: pageSize.toString(),
   });
-  
-  return fetchWithAuth(`/programs?${queryParams.toString()}`);
+
+  if (categories && categories.length > 0) {
+    categories.forEach(id => params.append('category', id.toString()));
+  }
+
+  return fetchWithAuth(`/resources/competitions/?${params.toString()}`);
 }
 
-export async function getProgram(id: string): Promise<ApiResponse<Program>> {
-  return fetchWithAuth(`/programs/${id}`);
+export async function getCategories(): Promise<Category[]> {
+  return fetchWithAuth('/resources/categories/');
 }

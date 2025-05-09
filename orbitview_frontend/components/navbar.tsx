@@ -31,7 +31,7 @@ export function Navbar() {
   }, []);
 
   const navigationItems = [
-    { title: "Discovery", href: ROUTES.DISCOVERY }
+    { title: "Discover", href: ROUTES.DISCOVERY }
   ];
 
   return (
@@ -39,13 +39,12 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4",
         {
-          "bg-opacity-95 backdrop-blur-sm shadow-sm": isScrolled,
-          "bg-transparent": !isScrolled,
-          "bg-lightBackground dark:bg-darkBackground": isScrolled,
+          "bg-background/95 backdrop-blur-sm shadow-sm": isScrolled || isOpen,
+          "bg-transparent": !isScrolled && !isOpen,
         }
       )}
     >
-      <div className="container flex items-center justify-between">
+      <div className="container px-6 md:px-8 lg:px-12 flex items-center justify-between">
         <Link 
           href={ROUTES.HOME} 
           className="flex items-center space-x-2 text-2xl font-bold transition-transform hover:scale-105"
@@ -105,7 +104,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 top-16 bg-lightBackground dark:bg-darkBackground md:hidden z-40">
+        <div className="fixed inset-0 top-16 bg-background md:hidden z-40">
           <div className="container py-8 flex flex-col space-y-8">
             {navigationItems.map((item) => (
               <Link
