@@ -1,22 +1,6 @@
 from rest_framework import generics, permissions
-from .models import (
-    Category,
-    SkillTag,
-    Program,
-    Host,
-    Event,
-    Competition,
-    ChallengeSubmission
-)
-from .serializers import (
-    CategorySerializer,
-    SkillTagSerializer,
-    ProgramSerializer,
-    HostSerializer,
-    EventSerializer,
-    CompetitionSerializer,
-    ChallengeSubmissionSerializer
-)
+from .models import *
+from .serializers import *
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -101,3 +85,23 @@ class ChallengeSubmissionDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return ChallengeSubmission.objects.filter(user=self.request.user)
+
+
+class ReactionListCreateView(generics.ListCreateAPIView):
+    queryset = Reaction.objects.all()
+    serializer_class = ReactionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Reaction.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class ReactionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reaction.objects.all()
+    serializer_class = ReactionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Reaction.objects.filter(user=self.request.user)

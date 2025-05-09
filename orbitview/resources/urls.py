@@ -19,4 +19,7 @@ urlpatterns = [
     
     path("programs/", views.ProgramListCreateView.as_view(), name="program-list"),
     path("programs/<int:pk>/", views.ProgramDetailView.as_view(), name="program-detail"),
+
+    path('reaction/', views.ReactionListCreateView.as_view(), name='reaction-list-create'),
+    path('reaction/<int:pk>/', views.ReactionDetailView.as_view(), name='reaction-detail'),
 ]

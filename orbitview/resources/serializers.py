@@ -1,13 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    Category,
-    SkillTag,
-    Host,
-    Event,
-    Competition,
-    Program,  
-    ChallengeSubmission
-)
+from .models import *
 from django.contrib.auth import get_user_model
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -106,3 +98,19 @@ class ChallengeSubmissionSerializer(serializers.ModelSerializer):
             'submitted_at', 'updated_at', 'link',
             'edited', 'is_verified'
         ]
+
+
+class ReactionSerializer(serializers.ModelSerializer):
+    content_type = serializers.SlugRelatedField(
+        queryset=ContentType.objects.all(),
+        slug_field='model'
+    )
+
+    class Meta:
+        model = Reaction
+        fields = ['id', 'user', 'reaction', 'content_type', 'object_id', 'timestamp']
+        read_only_fields = ['id', 'user', 'timestamp']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
