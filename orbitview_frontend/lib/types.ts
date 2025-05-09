@@ -73,7 +73,7 @@ export interface Competition {
   id: number;
   title: string;
   description: string;
-  organizer: number;
+  host: Host;
   url: string;
   tags: Tag[];
   difficulty_level: string;
@@ -81,4 +81,5 @@ export interface Competition {
   start_date: string;
   end_date: string;
   created_at: string;
+  cover_image: string | null;
 }

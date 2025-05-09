@@ -11,27 +11,27 @@ type ResourceCardProps = {
   type: "event" | "competition" | "program";
 };
 
-export function ResourceCard({ resource }: ResourceCardProps) {
 // export function ResourceCard({ resource, type }: ResourceCardProps) {
+export function ResourceCard({ resource }: ResourceCardProps) {
 
   // Default image if none provided
-  const imageUrl = resource.imageUrl || "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  const imageUrl = resource.cover_image || "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
   
   // Determine route based on type
   // const href = `/${type}s/${resource.id}`;
   
   // Date display logic
-  let dateDisplay = "";
+  // let dateDisplay = "";
   
-  if ("startDate" in resource) {
-    if ("endDate" in resource && resource.endDate) {
-      dateDisplay = `${formatDate(resource.startDate)} - ${formatDate(resource.endDate)}`;
-    } else {
-      dateDisplay = formatDate(resource.startDate);
-    }
-  } else if ("duration" in resource) {
-    dateDisplay = resource.duration;
-  }
+  // if ("startDate" in resource) {
+  //   if ("endDate" in resource && resource.endDate) {
+  //     dateDisplay = `${formatDate(resource.startDate)} - ${formatDate(resource.endDate)}`;
+  //   } else {
+  //     dateDisplay = formatDate(resource.startDate);
+  //   }
+  // } else if ("duration" in resource) {
+  //   dateDisplay = resource.duration;
+  // }
 
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-md h-full flex flex-col">
@@ -50,14 +50,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           <CardTitle className="text-xl line-clamp-2">{resource.title}</CardTitle>
         </div>
         <div className="flex flex-wrap gap-1 mt-2">
-          {resource.tags? <>{resource.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
-              {tag}
+          {resource.category? <>{resource.category.slice(0, 3).map((cat, e) => (
+            <Badge key={e} variant="secondary" className="text-xs">
+              {cat.title}
             </Badge>
           ))}</> : <></>}
-          {resource.tags.length > 3 && (
+          {resource.category.length > 3 && (
             <Badge variant="outline" className="text-xs">
-              +{resource.tags.length - 3}
+              +{resource.category.length - 3}
             </Badge>
           )}
         </div>
@@ -69,14 +69,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
         </p>
         
         <div className="space-y-2 text-sm">
-          {dateDisplay && (
+          {/*{dateDisplay && (
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span>{dateDisplay}</span>
             </div>
           )}
           
-          {"location" in resource && resource.location && (
+           {"location" in resource && resource.location && (
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground" />
               <span>{resource.location}</span>
@@ -88,13 +88,13 @@ export function ResourceCard({ resource }: ResourceCardProps) {
               <span className="font-medium">Format:</span>
               <span>{resource.format}</span>
             </div>
-          )}
+          )}*/} 
         </div>
       </CardContent>
       
       <CardFooter className="pt-2 flex justify-between items-center border-t">
         <span className="text-sm text-muted-foreground">
-          By {resource.organizerName}
+          By {resource.host.name}
         </span>
         
         <Link href={resource.url} className="text-lightHighlight dark:text-darkHighlight hover:underline flex items-center gap-1 text-sm font-medium">

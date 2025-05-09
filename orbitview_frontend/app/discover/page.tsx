@@ -58,12 +58,12 @@ export default function DiscoveryPage() {
   };
 
   const renderResources = () => {
-    const filteredEvents = filterResources(allEvents, selectedCategories);
-    const filteredPrograms = filterResources(allPrograms, selectedCategories);
+    const filteredEvents = filterResources(allEvents, selectedCategories) as Event[];
+    const filteredPrograms = filterResources(allPrograms, selectedCategories) as Program[];
     const filteredCompetitions = filterResources(
       allCompetitions,
       selectedCategories
-    );
+    ) as Competition[];
 
     const allResources = [
       ...filteredEvents.map((event) => ({
