@@ -1,4 +1,4 @@
-export const APP_NAME = "Launchpad";
+export const APP_NAME = "OrbitView";
 
 export const ROUTES = {
   HOME: "/",

@@ -58,97 +58,50 @@ export default function DiscoveryPage() {
   };
 
   const renderResources = () => {
-    const filteredEvents = filterResources(allEvents, selectedCategories) as Event[];
-    const filteredPrograms = filterResources(allPrograms, selectedCategories) as Program[];
-    const filteredCompetitions = filterResources(
-      allCompetitions,
-      selectedCategories
-    ) as Competition[];
+  const filteredEvents = filterResources(allEvents, selectedCategories) as Event[];
+  const filteredPrograms = filterResources(allPrograms, selectedCategories) as Program[];
+  const filteredCompetitions = filterResources(allCompetitions, selectedCategories) as Competition[];
 
-    const allResources = [
-      ...filteredEvents.map((event) => ({
-        resource: {
-          id: event.id.toString(),
-          title: event.title,
-          description: event.description,
-          startDate: event.start_time,
-          endDate: event.end_time,
-          location: event.location,
-          imageUrl: event.cover_image,
-          tags: event.category?.map((c) => c.title) || [],
-          organizerName: event.host.name,
-          url: event.url,
-          categories: event.category,
-        },
-        type: "event" as const,
-      })),
-      ...filteredPrograms.map((program) => ({
-        resource: {
-          id: program.id.toString(),
-          title: program.title,
-          description: program.description,
-          duration: program.duration_description,
-          imageUrl: program.cover_image,
-          tags: program.category?.map((c) => c.title) || [],
-          organizerName: program.host.name,
-          url: program.url,
-          categories: program.category,
-        },
-        type: "program" as const,
-      })),
-      ...filteredCompetitions.map((competition) => ({
-        resource: {
-          id: competition.id.toString(),
-          title: competition.title,
-          description: competition.description,
-          startDate: competition.start_date,
-          endDate: competition.end_date,
-          tags: competition.category?.map((c) => c.title) || [],
-          difficulty: competition.difficulty_level,
-          url: competition.url,
-          categories: competition.category,
-        },
-        type: "competition" as const,
-      })),
-    ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
+  const allResources = [
+    ...filteredEvents.map((resource) => ({
+      resource,
+      type: "event" as const,
+    })),
+    ...filteredPrograms.map((resource) => ({
+      resource,
+      type: "program" as const,
+    })),
+    ...filteredCompetitions.map((resource) => ({
+      resource,
+      type: "competition" as const,
+    })),
+  ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
 
-    if (query) {
-      const searchTerms = query.toLowerCase().split(" ");
-      return allResources
-        .filter(({ resource }) =>
-          searchTerms.some(
-            (term) =>
-              resource.title.toLowerCase().includes(term) ||
-              resource.description.toLowerCase().includes(term) ||
-              resource.tags.some((tag) => tag.toLowerCase().includes(term))
-          )
-        )
-        .map(({ resource, type }) => (
-          <ResourceCard
-            key={`${type}-${resource.id}`}
-            resource={resource}
-            type={type}
-          />
-        ));
-    }
-
-    return allResources.map(({ resource, type }) => (
-      <ResourceCard
-        key={`${type}-${resource.id}`}
-        resource={resource}
-        type={type}
-      />
-    ));
+  const filterByQuery = (r: Event | Program | Competition) => {
+    const searchTerms = query.toLowerCase().split(" ");
+    return searchTerms.some((term) =>
+      r.title.toLowerCase().includes(term) ||
+      r.description.toLowerCase().includes(term) ||
+      (r.category?.some((c) => c.title.toLowerCase().includes(term)) ?? false)
+    );
   };
 
+  return allResources
+    .filter(({ resource }) => (query ? filterByQuery(resource) : true))
+    .map(({ resource, type }) => (
+      <ResourceCard key={`${type}-${resource.id}`} resource={resource} type={type} />
+    ));
+};
+
+
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="container">
+    <div className="min-h-screen pt-24 pb-16 relative">
+      <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-4 text-white">
             Discover Your Next Opportunity
           </h1>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-lg text-white/80 mb-8">
             (Coming soon!) Use natural language to find events, competitions,
             and programs that match your interests and goals.
           </p>
@@ -159,7 +112,7 @@ export default function DiscoveryPage() {
               <Input
                 type="text"
                 placeholder="Try: 'Find me AI workshops and hackathons in the next 3 months'"
-                className="pl-10 py-6 text-lg"
+                className="pl-10 py-6 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -169,7 +122,7 @@ export default function DiscoveryPage() {
               size="lg"
               onClick={handleSearch}
               disabled={isSearching || !query}
-              className="min-w-[120px]"
+              className="min-w-[120px] bg-white/10 hover:bg-white/20 backdrop-blur-sm"
             >
               {isSearching ? (
                 <Sparkles className="h-5 w-5 animate-spin" />
@@ -179,7 +132,7 @@ export default function DiscoveryPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-start mb-8">
+          <p className="text-sm text-start mb-8 text-white/80">
             Click to select multiple categories and click again to unselect.
           </p>
           <CategoryFilter
@@ -193,13 +146,13 @@ export default function DiscoveryPage() {
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-card rounded-lg animate-pulse h-[400px]"
+                  className="bg-white/10 backdrop-blur-sm rounded-lg animate-pulse h-[400px]"
                 >
-                  <div className="h-48 bg-muted rounded-t-lg" />
+                  <div className="h-48 bg-white/20 rounded-t-lg" />
                   <div className="p-4 space-y-3">
-                    <div className="h-6 bg-muted rounded-md w-3/4" />
-                    <div className="h-4 bg-muted rounded-md w-1/2" />
-                    <div className="h-4 bg-muted rounded-md w-full" />
+                    <div className="h-6 bg-white/20 rounded-md w-3/4" />
+                    <div className="h-4 bg-white/20 rounded-md w-1/2" />
+                    <div className="h-4 bg-white/20 rounded-md w-full" />
                   </div>
                 </div>
               ))

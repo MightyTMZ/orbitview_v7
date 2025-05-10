@@ -1,5 +1,7 @@
 'use client';
 
+/*
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -26,6 +28,8 @@ const growthData = [
 
 const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))"];
 
+*/
+
 export function StatisticsSection() {
   return (
     <section className="py-20">
@@ -33,11 +37,11 @@ export function StatisticsSection() {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">The OrbitView Impact</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our platform connects thousands of individuals with career-accelerating opportunities every month.
+            Our platform aims to provide thousands of individuals with career-accelerating opportunities every day, week, month, or year.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Resource Distribution</CardTitle>
@@ -136,7 +140,7 @@ export function StatisticsSection() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </div>
+        </div>*/}
       </div>
     </section>
   );
