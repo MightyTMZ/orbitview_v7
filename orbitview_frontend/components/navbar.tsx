@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { APP_NAME, ROUTES } from "@/lib/constants";
 import { Menu, X, Orbit } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import styles from "./navbar.module.css"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { resolvedTheme } = useTheme();
   const pathname = usePathname();
 
   // Example authenticated state - would be from auth context in real app
@@ -30,9 +33,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navigationItems = [
-    { title: "Discover", href: ROUTES.DISCOVERY }
-  ];
+  const navigationItems = [{ title: "Discover", href: ROUTES.DISCOVERY }];
+
+  // const textColor = resolvedTheme == "dark" ? "text-white" : "text-gray-900";
+  // const bgColor = resolvedTheme == "dark" ? "black" : "white";
+  const hoverColor =
+    resolvedTheme == "dark" ? "hover:text-white" : "hover:text-gray-900";
 
   return (
     <header
@@ -45,8 +51,8 @@ export function Navbar() {
       )}
     >
       <div className="container px-6 md:px-8 lg:px-12 flex items-center justify-between">
-        <Link 
-          href={ROUTES.HOME} 
+        <Link
+          href={ROUTES.HOME}
           className="flex items-center space-x-2 text-2xl font-bold transition-transform hover:scale-105"
           onClick={closeMenu}
         >
@@ -96,7 +102,12 @@ export function Navbar() {
         {/* Mobile Navigation Toggle */}
         <div className="flex items-center space-x-4 md:hidden">
           <ThemeToggle />
-          <Button variant="ghost" size="icon" onClick={toggleMenu} className="md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleMenu}
+            className="md:hidden"
+          >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
@@ -104,17 +115,17 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="fixed inset-0 top-16 bg-background md:hidden z-40">
-          <div className="container py-8 flex flex-col space-y-8">
+        <div className="fixed inset-0 top-16 z-50 bg-white text-black dark:bg-zinc-900 dark:text-white md:hidden">
+          <div className={`container py-8 px-4 flex flex-col space-y-8 ${resolvedTheme === "dark" ? styles.darkNavMobile : styles.lightNavMobile}`} >
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-xl py-2 transition-colors duration-200 hover:text-lightHighlight dark:hover:text-darkHighlight",
+                  "text-xl py-2 transition-colors duration-200",
+                  hoverColor,
                   {
-                    "text-lightHighlight dark:text-darkHighlight font-medium":
-                      pathname === item.href,
+                    "text-primary font-medium": pathname === item.href,
                   }
                 )}
                 onClick={closeMenu}
