@@ -3,11 +3,15 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { useTheme } from "next-themes";
 
 export default function EarthOrbitView() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
+    if (resolvedTheme !== "dark") return;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -21,17 +25,18 @@ export default function EarthOrbitView() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000);
+    renderer.domElement.style.pointerEvents = "none"; // Prevents interference
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
 
-    if (containerRef.current) {
-      containerRef.current.appendChild(renderer.domElement);
-    }
+    containerRef.current?.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = true;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.5;
 
-    // Earth
     const textureLoader = new THREE.TextureLoader();
     const earthTexture = textureLoader.load(
       "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg"
@@ -41,7 +46,6 @@ export default function EarthOrbitView() {
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earth);
 
-    // Lighting
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 3, 5);
     scene.add(directionalLight);
@@ -49,9 +53,9 @@ export default function EarthOrbitView() {
     const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 
-    // Animation loop
+    let animationFrameId: number;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
       earth.rotation.y += 0.0005;
       controls.update();
       renderer.render(scene, camera);
@@ -68,12 +72,13 @@ export default function EarthOrbitView() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       controls.dispose();
       renderer.dispose();
       containerRef.current?.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [resolvedTheme]);
 
-  return <div ref={containerRef} className="fixed inset-0 z-[-1]" />;
+  return <div ref={containerRef} className="fixed inset-0 -z-10" />;
 }

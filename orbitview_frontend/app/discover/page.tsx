@@ -8,6 +8,8 @@ import { ResourceCard } from "@/components/resource-card";
 import { Event, Program, Competition, Category } from "@/lib/types";
 import { CategoryFilter } from "@/components/category-filter";
 import { getEvents, getPrograms, getCompetitions } from "@/lib/api";
+import { DisoverPageHeader } from "@/components/discover-header";
+import { useTheme } from "next-themes";
 
 export default function DiscoveryPage() {
   const [query, setQuery] = useState("");
@@ -17,6 +19,7 @@ export default function DiscoveryPage() {
   const [allPrograms, setAllPrograms] = useState<Program[]>([]);
   const [allCompetitions, setAllCompetitions] = useState<Competition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     fetchAllResources();
@@ -58,53 +61,64 @@ export default function DiscoveryPage() {
   };
 
   const renderResources = () => {
-  const filteredEvents = filterResources(allEvents, selectedCategories) as Event[];
-  const filteredPrograms = filterResources(allPrograms, selectedCategories) as Program[];
-  const filteredCompetitions = filterResources(allCompetitions, selectedCategories) as Competition[];
+    const filteredEvents = filterResources(
+      allEvents,
+      selectedCategories
+    ) as Event[];
+    const filteredPrograms = filterResources(
+      allPrograms,
+      selectedCategories
+    ) as Program[];
+    const filteredCompetitions = filterResources(
+      allCompetitions,
+      selectedCategories
+    ) as Competition[];
 
-  const allResources = [
-    ...filteredEvents.map((resource) => ({
-      resource,
-      type: "event" as const,
-    })),
-    ...filteredPrograms.map((resource) => ({
-      resource,
-      type: "program" as const,
-    })),
-    ...filteredCompetitions.map((resource) => ({
-      resource,
-      type: "competition" as const,
-    })),
-  ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
+    const allResources = [
+      ...filteredEvents.map((resource) => ({
+        resource,
+        type: "event" as const,
+      })),
+      ...filteredPrograms.map((resource) => ({
+        resource,
+        type: "program" as const,
+      })),
+      ...filteredCompetitions.map((resource) => ({
+        resource,
+        type: "competition" as const,
+      })),
+    ].sort((a, b) => a.resource.title.localeCompare(b.resource.title));
 
-  const filterByQuery = (r: Event | Program | Competition) => {
-    const searchTerms = query.toLowerCase().split(" ");
-    return searchTerms.some((term) =>
-      r.title.toLowerCase().includes(term) ||
-      r.description.toLowerCase().includes(term) ||
-      (r.category?.some((c) => c.title.toLowerCase().includes(term)) ?? false)
-    );
+    const filterByQuery = (r: Event | Program | Competition) => {
+      const searchTerms = query.toLowerCase().split(" ");
+      return searchTerms.some(
+        (term) =>
+          r.title.toLowerCase().includes(term) ||
+          r.description.toLowerCase().includes(term) ||
+          (r.category?.some((c) => c.title.toLowerCase().includes(term)) ??
+            false)
+      );
+    };
+
+    return allResources
+      .filter(({ resource }) => (query ? filterByQuery(resource) : true))
+      .map(({ resource, type }) => (
+        <ResourceCard
+          key={`${type}-${resource.id}`}
+          resource={resource}
+          type={type}
+        />
+      ));
   };
 
-  return allResources
-    .filter(({ resource }) => (query ? filterByQuery(resource) : true))
-    .map(({ resource, type }) => (
-      <ResourceCard key={`${type}-${resource.id}`} resource={resource} type={type} />
-    ));
-};
-
+  const textClass = resolvedTheme == "dark"? "text-white" : 'text-dark';
+  const bgColor = resolvedTheme == "dark"? "white" : 'dark';
 
   return (
     <div className="min-h-screen pt-24 pb-16 relative">
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-white">
-            Discover Your Next Opportunity
-          </h1>
-          <p className="text-lg text-white/80 mb-8">
-            (Coming soon!) Use natural language to find events, competitions,
-            and programs that match your interests and goals.
-          </p>
+          <DisoverPageHeader />
 
           <div className="flex gap-3 mb-6">
             <div className="relative flex-1">
@@ -112,7 +126,7 @@ export default function DiscoveryPage() {
               <Input
                 type="text"
                 placeholder="Try: 'Find me AI workshops and hackathons in the next 3 months'"
-                className="pl-10 py-6 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50"
+                className={`pl-10 py-6 text-lg bg-white/10 backdrop-blur-sm border-white/20 ${textClass} placeholder:text-white/50`}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -122,7 +136,7 @@ export default function DiscoveryPage() {
               size="lg"
               onClick={handleSearch}
               disabled={isSearching || !query}
-              className="min-w-[120px] bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+              className={`min-w-[120px] bg-${bgColor}/10 hover:bg-${bgColor}/20 backdrop-blur-sm ${textClass}`}
             >
               {isSearching ? (
                 <Sparkles className="h-5 w-5 animate-spin" />
@@ -132,7 +146,7 @@ export default function DiscoveryPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-start mb-8 text-white/80">
+          <p className={`text-sm text-start mb-8 ${textClass}/80`}>
             Click to select multiple categories and click again to unselect.
           </p>
           <CategoryFilter

@@ -8,10 +8,12 @@ import { ArrowRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import EarthOrbitView from "./EarthOrbitView";
+import { useTheme } from "next-themes";
 
 export function HeroSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     setIsVisible(true);
@@ -114,7 +116,7 @@ export function HeroSection() {
       {/* Decorative dots/circles (optional) */}
       <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-lightHighlight dark:bg-darkHighlight opacity-10 blur-3xl" />
       <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-lightHighlight dark:bg-darkHighlight opacity-10 blur-3xl" />
-      <EarthOrbitView/>
+      {resolvedTheme == "dark" ? <EarthOrbitView /> : <></>}
     </section>
   );
 }
