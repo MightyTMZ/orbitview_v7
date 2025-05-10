@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Orbit } from "lucide-react";
 import Link from "next/link";
-import { APP_NAME, ROUTES } from "@/lib/constants";
+import { BACKEND, ROUTES } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -64,7 +64,7 @@ export default function RegisterPage() {
 
   // const [startedAccountCreation, setStartedAccountCreation] = useState(false);
 
-  const backend = "http://127.0.0.1:8000";
+  const backend = BACKEND;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -201,7 +201,7 @@ export default function RegisterPage() {
 
       // Step 4: Store the access token in localStorage
 
-      localStorage.setItem("token", accessToken);
+      localStorage.setItem("orbitview_access_token", accessToken);
       toast.success("Account created successfully!");
       router.push("/"); // This redirects without full page reload
       // Continue after all steps succeed (e.g., navigate to another page or show a success message)

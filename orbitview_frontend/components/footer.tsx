@@ -9,9 +9,9 @@ export function Footer() {
     {
       title: "Resources",
       links: [
-        { label: "Events", href: ROUTES.EVENTS },
-        { label: "Competitions", href: ROUTES.COMPETITIONS },
-        { label: "Programs", href: ROUTES.PROGRAMS },
+        { label: "Events", href: ROUTES.DISCOVERY },
+        { label: "Competitions", href: ROUTES.DISCOVERY },
+        { label: "Programs", href: ROUTES.DISCOVERY },
       ],
     },
     {
