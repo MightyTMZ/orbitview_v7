@@ -54,10 +54,9 @@ export function HeroSection() {
             className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
             variants={fadeIn}
           >
-            <span className="text-lightHighlight dark:text-darkHighlight">
-              Accelerate your career
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
+              Accelerate your career today!
             </span>{" "}
-            like never before
           </motion.h1>
 
           <motion.p
