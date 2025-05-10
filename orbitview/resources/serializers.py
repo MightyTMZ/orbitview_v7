@@ -28,6 +28,7 @@ class HostSerializer(serializers.ModelSerializer):
 
 class ProgramSerializer(serializers.ModelSerializer):
     host = HostSerializer(read_only=True)
+    category = CategorySerializer(many=True, read_only=True)
     
     class Meta:
         model = Program
@@ -39,6 +40,7 @@ class ProgramSerializer(serializers.ModelSerializer):
             'url',
             'duration_description',
             'cover_image',
+            'category',
         ]
 
 
@@ -78,7 +80,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'organizer', 'url',
             'tags', 'tag_ids', 'difficulty_level', 'category',
-            'category_ids', 'start_date', 'end_date', 'created_at', 'past'
+            'category_ids', 'start_date', 'end_date', 'created_at', 'past', 'cover_image',
         ]
 
 

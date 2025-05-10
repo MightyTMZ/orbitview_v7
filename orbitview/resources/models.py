@@ -90,23 +90,26 @@ class Competition(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     cover_image = models.ImageField(upload_to="media/competitions/cover_images")
 
-    def clean(self):
+    '''def clean(self):
         super().clean()
-        if self.start_date and self.end_date:
-            if self.end_date <= self.start_date:
+        end_date = timezone.make_aware(self.end_date) if timezone.is_naive(self.end_date) else self.end_date
+
+        if self.start_date and end_date:
+            if end_date <= self.start_date:
                 raise ValidationError("End date must be after the start date.")
-            if self.end_date < timezone.now():
+            if end_date < timezone.now():
                 raise ValidationError("End date cannot be in the past.")
 
 
     @property
     def past(self):
-        return self.end_date < datetime.now()
+        end_date = timezone.make_aware(self.end_date) if timezone.is_naive(self.end_date) else self.end_date
+        return end_date < datetime.now()
 
     def __str__(self):
         return self.title
 
-
+'''
 
 class ChallengeSubmission(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
