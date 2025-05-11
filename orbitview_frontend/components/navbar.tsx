@@ -17,7 +17,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { resolvedTheme } = useTheme();
   const pathname = usePathname();
-  const { isAuthenticated, checkAuth } = useAuthStore();
+  const { isAuthenticated, checkAuth, logout } = useAuthStore();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -86,9 +86,14 @@ export function Navbar() {
           <div className="flex items-center space-x-4 pl-6 border-l border-gray-300 dark:border-gray-700">
             <ThemeToggle />
             {isAuthenticated ? (
-              <Link href={ROUTES.PROFILE}>
-                <Button variant="outline">Profile</Button>
-              </Link>
+              <div className="flex space-x-2">
+                <Link href={ROUTES.PROFILE}>
+                  <Button variant="outline">Profile</Button>
+                </Link>
+                <Button variant="ghost" onClick={logout}>
+                  Logout
+                </Button>
+              </div>
             ) : (
               <div className="flex space-x-2">
                 <Link href={ROUTES.LOGIN}>
@@ -138,11 +143,24 @@ export function Navbar() {
             ))}
             <div className="pt-6 border-t border-gray-300 dark:border-gray-700">
               {isAuthenticated ? (
-                <Link href={ROUTES.PROFILE} onClick={closeMenu}>
-                  <Button className="w-full" size="lg">
-                    Profile
+                <div className="flex flex-col space-y-4">
+                  <Link href={ROUTES.PROFILE} onClick={closeMenu}>
+                    <Button className="w-full" size="lg">
+                      Profile
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => {
+                      logout();
+                      closeMenu();
+                    }}
+                  >
+                    Logout
                   </Button>
-                </Link>
+                </div>
               ) : (
                 <div className="flex flex-col space-y-4">
                   <Link href={ROUTES.LOGIN} onClick={closeMenu}>
