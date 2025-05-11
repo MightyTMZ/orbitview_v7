@@ -10,15 +10,14 @@ import { Menu, X, Orbit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import styles from "./navbar.module.css"
+import { useAuthStore } from "@/lib/store/auth-store";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { resolvedTheme } = useTheme();
   const pathname = usePathname();
-
-  // Example authenticated state - would be from auth context in real app
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, checkAuth } = useAuthStore();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -32,6 +31,10 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const navigationItems = [{ title: "Discover", href: ROUTES.DISCOVERY }];
 

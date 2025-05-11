@@ -147,8 +147,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'resources.pagination.StandardResultsSetPagination'
-
+    'DEFAULT_PAGINATION_CLASS': 'resources.pagination.StandardResultsSetPagination',
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '1000/day',  # Limit for unauthenticated users
+        'user': '10000/day', # Limit for authenticated users
+        'waitlist_user': '10/minute',  # Custom throttle for this endpoint
+    },
 }
 
 SIMPLE_JWT = {

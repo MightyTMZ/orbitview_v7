@@ -19,56 +19,17 @@ import { motion } from "framer-motion";
 import EarthOrbitView from "./EarthOrbitView";
 import { fetchWithAuth } from "@/lib/api";
 import { useTheme } from "next-themes";
+import { useAuthStore } from "@/lib/store/auth-store";
 
 export function HeroSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const [firstName, setFirstName] = useState<string>("there");
   const { resolvedTheme } = useTheme();
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, user, checkAuth } = useAuthStore();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("orbitview_access_token");
-
-      if (!token) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`${BACKEND}/api/users/me/`, {
-          method: "GET",
-          headers: {
-            Authorization: `JWT ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setIsAuthenticated(false);
-          return;
-        }
-
-        const data = await response.json();
-
-        // Optional: validate data structure
-        if (data && data.first_name) {
-          setFirstName(data.first_name);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        setIsAuthenticated(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  console.log(isAuthenticated);
+    checkAuth();
+  }, [checkAuth]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -251,7 +212,7 @@ export function HeroSection() {
               variants={itemVariants}
               className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"
             >
-              Hi {firstName}! It's great to have you here
+              Hi {user?.first_name}! It's great to have you here
             </motion.h1>
 
             <motion.p
