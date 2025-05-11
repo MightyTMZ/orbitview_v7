@@ -95,6 +95,12 @@ DATABASES = {
 }
 
 
+CORS_ALLOWed_ORIGINS = [
+    "https://get-orbitview.vercel.app",
+    "https://www.orbitview.net",
+    'http://localhost:3000',
+]
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -161,6 +167,3 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": False,
     "SERIALIZERS": {},
 }
-
-
-CORS_ALLOW_ALL_ORIGINS = True
