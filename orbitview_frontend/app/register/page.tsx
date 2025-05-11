@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Orbit } from "lucide-react";
+import { Orbit, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { BACKEND, ROUTES } from "@/lib/constants";
 import { useRouter } from "next/navigation";
@@ -29,6 +29,7 @@ interface FormData {
   email: string;
   username: string;
   password: string;
+  confirmPassword: string;
   first_name: string;
   last_name: string;
   date_of_birth: string;
@@ -53,10 +54,15 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string>("");
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     username: "",
     password: "",
+    confirmPassword: "",
     first_name: "",
     last_name: "",
     date_of_birth: "",
@@ -93,6 +99,14 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Add password validation
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+    setPasswordError("");
+
     setIsAllFieldsReadOnly(true);
     setIsLoading(true);
     // setStartedAccountCreation(true);
@@ -242,10 +256,10 @@ export default function RegisterPage() {
             <span className="text-3xl font-bold">{APP_NAME}</span>
           </Link>*/}
           <h2 className="text-2xl font-bold text-center">
-            Create your account
+            Create your FREE account
           </h2>
           <p className="mt-2 text-muted-foreground text-center">
-            Accelerate your future before it's too late...
+            Accelerate your future before it's too late... Takes less than 30 seconds
           </p>
         </div>
 
@@ -319,16 +333,64 @@ export default function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password" // Add name attribute
-                  type="password"
-                  placeholder="********"
-                  onChange={handleInputChange}
-                  required
-                  disabled={isLoading}
-                  readOnly={allFieldsReadOnly}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="********"
+                    onChange={handleInputChange}
+                    required
+                    disabled={isLoading}
+                    readOnly={allFieldsReadOnly}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading || allFieldsReadOnly}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="********"
+                    onChange={handleInputChange}
+                    required
+                    disabled={isLoading}
+                    readOnly={allFieldsReadOnly}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={isLoading || allFieldsReadOnly}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                {passwordError && (
+                  <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Date of Birth</Label>

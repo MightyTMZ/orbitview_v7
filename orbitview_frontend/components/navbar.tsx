@@ -87,8 +87,8 @@ export function Navbar() {
             <ThemeToggle />
             {isAuthenticated ? (
               <div className="flex space-x-2">
-                <Link href={ROUTES.PROFILE}>
-                  <Button variant="outline">Profile</Button>
+                <Link href={ROUTES.DISCOVERY}>
+                  <Button variant="outline">Discover</Button>
                 </Link>
                 <Button variant="ghost" onClick={logout}>
                   Logout

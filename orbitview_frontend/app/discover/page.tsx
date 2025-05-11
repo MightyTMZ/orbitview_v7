@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles } from "lucide-react";
@@ -10,8 +11,12 @@ import { CategoryFilter } from "@/components/category-filter";
 import { getEvents, getPrograms, getCompetitions } from "@/lib/api";
 import { DisoverPageHeader } from "@/components/discover-header";
 import { useTheme } from "next-themes";
+import { useAuthStore } from "@/lib/store/auth-store";
+import { ROUTES } from "@/lib/constants";
 
 export default function DiscoveryPage() {
+  const router = useRouter();
+  const { isAuthenticated, checkAuth } = useAuthStore();
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]); // Use category IDs
@@ -20,6 +25,16 @@ export default function DiscoveryPage() {
   const [allCompetitions, setAllCompetitions] = useState<Competition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await checkAuth();
+      if (!isAuthenticated) {
+        router.push(ROUTES.REGISTER);
+      }
+    };
+    checkAuthentication();
+  }, [checkAuth, isAuthenticated, router]);
 
   useEffect(() => {
     fetchAllResources();
