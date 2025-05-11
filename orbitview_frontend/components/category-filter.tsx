@@ -5,6 +5,7 @@ import { Category } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { BACKEND } from "@/lib/constants";
 
 interface CategoryFilterProps {
   selectedCategories: number[];
@@ -18,7 +19,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/resources/categories/');
+        const response = await fetch(`${BACKEND}/api/resources/categories/`);
         const data = await response.json();
         setCategories(data);
       } catch (error) {
