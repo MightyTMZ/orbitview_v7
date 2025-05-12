@@ -221,8 +221,7 @@ export function HeroSection() {
               variants={itemVariants}
               className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
             >
-              We're excited to help you discover amazing opportunities and
-              accelerate your career growth.
+              We're excited to have you here!
             </motion.p>
 
             <motion.div
