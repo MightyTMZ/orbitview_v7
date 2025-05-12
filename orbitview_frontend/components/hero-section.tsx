@@ -17,12 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import EarthOrbitView from "./EarthOrbitView";
-import { fetchWithAuth } from "@/lib/api";
+// import { fetchWithAuth } from "@/lib/api";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/lib/store/auth-store";
 
 export function HeroSection() {
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const { resolvedTheme } = useTheme();
   const { isAuthenticated, user, checkAuth } = useAuthStore();
@@ -71,16 +71,17 @@ export function HeroSection() {
               variants={fadeIn}
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
-                Accelerate your career today!
-              </span>{" "}
+                Conquer AI and Accelerate Your Future
+              </span>
             </motion.h1>
 
             <motion.p
               className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto"
               variants={fadeIn}
             >
-              Launchpad for any big ambition — discover what&apos;s next, faster
-              using next-generation intelligence{" "}
+              Stand out on paper. We built this space to help you grow
+              faster — with credible insights and soon a better way to
+              show who you are and tell your story.
             </motion.p>
 
             <motion.div
