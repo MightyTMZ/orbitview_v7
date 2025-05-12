@@ -100,6 +100,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 className="w-full sm:w-auto whitespace-nowrap rounded-full px-8"
+                onClick={() => (window.location.href = "/discover")}
               >
                 Get Started
               </Button>

@@ -255,7 +255,7 @@ export default function RegisterPage() {
             <Orbit className="h-12 w-12" />
             <span className="text-3xl font-bold">{APP_NAME}</span>
           </Link>*/}
-          <h2 className="text-2xl font-bold text-center">
+          <h2 className="text-2xl font-bold text-center" style={{ marginTop: "3rem" }}>
             Create your FREE account
           </h2>
           <p className="mt-2 text-muted-foreground text-center">
