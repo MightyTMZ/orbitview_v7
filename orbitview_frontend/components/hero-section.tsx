@@ -87,7 +87,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
               variants={fadeIn}
             >
-              <div className="relative w-full max-w-md">
+              {/*<div className="relative w-full max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   type="text"
@@ -96,7 +96,7 @@ export function HeroSection() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-              </div>
+              </div>*/}
               <Button
                 size="lg"
                 className="w-full sm:w-auto whitespace-nowrap rounded-full px-8"
