@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import { Inter, Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -12,28 +13,16 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: APP_NAME,
-  description: "Launchpad for any big ambition — discover what's next, faster using next-generation intelligence",
+  description: "Conquer AI and Accelerate Your Future",
+  keywords: "certifications, artificial intelligence, generative ai, learning, resources, guides, fellowships",
   icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/favicons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
+    icon: '/favicons/favicon.ico',
+    shortcut: '/favicons/favicon-32x32.png',
+    apple: '/favicons/apple-touch-icon.png',
     other: [
       {
-        rel: 'android-chrome-192x192',
+        rel: 'android-chrome',
         url: '/favicons/android-chrome-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        rel: 'android-chrome-512x512',
-        url: '/favicons/android-chrome-512x512.png',
-        sizes: '512x512',
-        type: 'image/png',
       },
     ],
   },
@@ -47,6 +36,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <link rel="icon" href="/favicons/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+      </Head>
       <body className={inter.className}>
         <Analytics/>
         <AuthProvider>
