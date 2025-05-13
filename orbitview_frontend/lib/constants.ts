@@ -1,5 +1,6 @@
 export const APP_NAME = "OrbitView";
 export const BACKEND = "https://orbitview.pythonanywhere.com";
+export const shortLiner = "Go-to career accelerator for students and professionals."
 
 export const ROUTES = {
   HOME: "/",

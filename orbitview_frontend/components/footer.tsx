@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME, ROUTES } from "@/lib/constants";
+import { APP_NAME, ROUTES, shortLiner } from "@/lib/constants";
 import { Orbit } from "lucide-react";
 
 export function Footer() {
@@ -25,8 +25,14 @@ export function Footer() {
     {
       title: "Support",
       links: [
-        { label: "Help Center", href: "https://www.linkedin.com/company/orbitview" },
-        { label: "Contact Us", href: "https://www.linkedin.com/company/orbitview" },
+        {
+          label: "Help Center",
+          href: "https://www.linkedin.com/company/orbitview",
+        },
+        {
+          label: "Contact Us",
+          href: "https://www.linkedin.com/company/orbitview",
+        },
         // { label: "Privacy Policy", href: "/" },
         // { label: "Terms of Service", href: "/terms" },
       ],
@@ -46,8 +52,7 @@ export function Footer() {
               <span className="font-bold text-xl">{APP_NAME}</span>
             </Link>
             <p className="text-muted-foreground max-w-xs">
-              Launchpad for any big ambition — discover what's next, faster
-              using next-generation intelligence
+              {shortLiner}
             </p>
           </div>
 

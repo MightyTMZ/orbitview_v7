@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ROUTES, APP_NAME, BACKEND } from "@/lib/constants";
+import { ROUTES, APP_NAME, BACKEND, shortLiner } from "@/lib/constants";
 import {
   ArrowRight,
   Search,
@@ -20,6 +20,8 @@ import EarthOrbitView from "./EarthOrbitView";
 // import { fetchWithAuth } from "@/lib/api";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/lib/store/auth-store";
+import { FeaturesSection } from "./features-section";
+import { TestimonialsSection } from "./testimonials-section";
 
 export function HeroSection() {
   // const [searchTerm, setSearchTerm] = useState("");
@@ -55,6 +57,7 @@ export function HeroSection() {
   };
   if (!isAuthenticated) {
     return (
+      <>
       <section className="relative pt-28 pb-20 md:pt-36 md:pb-32 overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900 opacity-40" />
@@ -71,7 +74,7 @@ export function HeroSection() {
               variants={fadeIn}
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
-                Conquer AI and Accelerate Your Future
+                Introducing OrbitView
               </span>
             </motion.h1>
 
@@ -79,9 +82,7 @@ export function HeroSection() {
               className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto"
               variants={fadeIn}
             >
-              Stand out on paper. We built this space to help you grow
-              faster — with credible insights and soon a better way to
-              show who you are and tell your story.
+              {shortLiner}
             </motion.p>
 
             <motion.div
@@ -135,6 +136,9 @@ export function HeroSection() {
         <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-lightHighlight dark:bg-darkHighlight opacity-10 blur-3xl" />
         {resolvedTheme == "dark" ? <EarthOrbitView /> : <></>}
       </section>
+      <FeaturesSection/>
+      {/*<TestimonialsSection/> only until we get 3 TOP tier testimonials*/}
+      </>
     );
   } else {
     const containerVariants = {
@@ -286,7 +290,7 @@ export function HeroSection() {
             animate={"visible"}
             className="mt-16 text-center"
           >
-            <p className="text-muted-foreground">
+            {/*<p className="text-muted-foreground">
               Need help getting started?{" "}
               <Link
                 href={ROUTES.HELP}
@@ -294,7 +298,7 @@ export function HeroSection() {
               >
                 Check out our guide
               </Link>
-            </p>
+            </p>*/}
           </motion.div>
         </div>
       </div>

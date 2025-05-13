@@ -11,6 +11,13 @@ import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
 export const metadata: Metadata = {
   title: APP_NAME,
   description: "Conquer AI and Accelerate Your Future",
@@ -43,7 +50,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
       </Head>
-      <body className={inter.className}>
+      <body className={poppins.variable}>
         <Analytics/>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

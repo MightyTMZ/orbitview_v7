@@ -24,6 +24,7 @@ import Link from "next/link";
 import { BACKEND, ROUTES } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import InfoCard from "@/components/InfoCard";
 
 interface FormData {
   email: string;
@@ -99,10 +100,18 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     // Add password validation
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Passwords do not match");
+      return;
+    } else if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    } else if (formData.password.length < 8) {
+      setError("Password has to be at least 8 characters. ");
       return;
     }
     setPasswordError("");
@@ -138,11 +147,11 @@ export default function RegisterPage() {
         // Handle registration errors
         if (data.username === "A user with that username already exists.") {
           setError(
-            `${formData.username} is already taken. Please choose another one.`
+            `"${formData.username}" is already taken. Please choose another one.`
           );
         } else if (data.email === "user with this email already exists") {
           setError(
-            `An account with email ${formData.email} already exists. Are you trying to log in?`
+            `An account with email "${formData.email}" already exists. Are you trying to log in?`
           );
         } else if (data.password) {
           setError(data.password[0]);
@@ -255,11 +264,14 @@ export default function RegisterPage() {
             <Orbit className="h-12 w-12" />
             <span className="text-3xl font-bold">{APP_NAME}</span>
           </Link>*/}
-          <h2 className="text-2xl font-bold text-center" style={{ marginTop: "3rem" }}>
+          <h2
+            className="text-2xl font-bold text-center"
+            style={{ marginTop: "3rem" }}
+          >
             Create your FREE account
           </h2>
           <p className="mt-2 text-muted-foreground text-center">
-            Accelerate your future before it's too late... Takes less than 30 seconds
+            Takes less than 30 seconds
           </p>
         </div>
 
@@ -478,6 +490,8 @@ export default function RegisterPage() {
             </CardFooter>
           </form>
         </Card>
+        <div style={{ height: "20px"}}></div>
+        <InfoCard message="Creating a FREE account also means you will be on the waitlist for OrbitView and receive updates regarding our product. You will be able to opt-out any time." />
       </div>
     </div>
   );

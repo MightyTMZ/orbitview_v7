@@ -14,7 +14,7 @@ import {
 import { Orbit, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { BACKEND, ROUTES } from "@/lib/constants";
-import { toast } from "react-toastify" ;
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 /*interface FormData {
@@ -27,6 +27,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
@@ -37,36 +38,38 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-    const res = await fetch(`${backend}/auth/jwt/create/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
+      const res = await fetch(`${backend}/auth/jwt/create/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
 
-    if (!res.ok) throw new Error("Login failed");
+      if (!res.ok) {
+        setError("Username or password incorrect. Please try again");
+        return; // stops the execution
+      }
 
-    const data = await res.json();
-    localStorage.setItem("orbitview_access_token", data.access);
+      const data = await res.json();
+      localStorage.setItem("orbitview_access_token", data.access);
 
-    toast.success("Login successful. Welcome back!", {
-      position: "top-right",
-      autoClose: 3000,
-    });
+      toast.success("Login successful. Welcome back!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
 
-    setTimeout(() => {
-      router.push("/"); // use router instead of window.location.href
-    }, 500); // small delay to show toast before redirect
-
-  } catch (error) {
-    toast.error("Login failed. Please check your credentials.");
-  } finally {
-    setIsLoading(false);
-  }
+      setTimeout(() => {
+        router.push("/"); // use router instead of window.location.href
+      }, 500); // small delay to show toast before redirect
+    } catch (error) {
+      toast.error("Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
+    }
 
     setIsLoading(false);
   };
@@ -146,6 +149,7 @@ export default function LoginPage() {
                     </span>
                   </Button>
                 </div>
+                {error && <p className="text-red-300">{error}</p>}
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
