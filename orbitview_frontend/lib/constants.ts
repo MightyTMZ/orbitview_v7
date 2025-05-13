@@ -5,6 +5,7 @@ export const shortLiner = "Go-to career accelerator for students and professiona
 export const ROUTES = {
   HOME: "/",
   DISCOVERY: "/discover",
+  PRODUCT: "/product",
   LOGIN: "/login",
   REGISTER: "/register",
   PROFILE: "/profile",

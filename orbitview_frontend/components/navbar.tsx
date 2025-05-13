@@ -36,7 +36,10 @@ export function Navbar() {
     checkAuth();
   }, [checkAuth]);
 
-  const navigationItems = [{ title: "Discover", href: ROUTES.DISCOVERY }];
+  const navigationItems = [
+    { title: "Discover", href: ROUTES.DISCOVERY }, 
+    { title: "Our Product", href: ROUTES.PRODUCT }, 
+  ];
 
   // const textColor = resolvedTheme == "dark" ? "text-white" : "text-gray-900";
   // const bgColor = resolvedTheme == "dark" ? "black" : "white";
