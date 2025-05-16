@@ -8,6 +8,7 @@ import { Footer } from '@/components/footer';
 import { APP_NAME } from '@/lib/constants';
 import { AuthProvider } from "@/components/auth-provider";
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -58,6 +59,7 @@ export default function RootLayout({
               <Navbar />
               <main className="flex-grow container mx-auto px-6 md:px-8 lg:px-12">{children}</main>
               <Footer />
+              <Toaster />
             </div>
           </ThemeProvider>
         </AuthProvider>

@@ -1,8 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from .models import Project, Skill, Achievement
 from django.db.models import Q
 from .models import (
     Skill, Achievement, Project, CareerTimeline,
@@ -170,3 +174,47 @@ class OpportunityApplicationViewSet(viewsets.ModelViewSet):
                     "Only the opportunity poster can update the application status."
                 )
         serializer.save()
+
+
+User = get_user_model()
+
+
+class ProfileDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        # Get the user's profile
+        # profile = get_object_or_404(User, pk=request.user.pk)
+        
+        # Get all related data
+        timeline_entries = CareerTimeline.objects.filter(user=request.user).order_by('-start_date')
+        projects = Project.objects.filter(user=request.user).order_by('-start_date')
+        skills = UserSkill.objects.filter(user=request.user) #.order_by('-proficiency')
+        achievements = Achievement.objects.filter(user=request.user).order_by('-date_achieved')
+        
+        # Calculate profile completion
+        total_fields = 4  # timeline, projects, skills, achievements
+        completed_fields = sum([
+            timeline_entries.exists(),
+            projects.exists(),
+            skills.exists(),
+            achievements.exists(),
+        ])
+        profile_completion = (completed_fields / total_fields) * 100
+        
+        # Prepare the response data
+        response_data = {
+            'timeline_entries': CareerTimelineSerializer(timeline_entries, many=True).data,
+            'projects': ProjectSerializer(projects, many=True).data,
+            'skills': UserSkillSerializer(skills, many=True).data,
+            'achievements': AchievementSerializer(achievements, many=True).data,
+            'stats': {
+                'timeline_entries': timeline_entries.count(),
+                'projects': projects.count(),
+                'skills': skills.count(),
+                'achievements': achievements.count(),
+                'profile_completion': profile_completion,
+            }
+        }
+        
+        return Response(response_data) 

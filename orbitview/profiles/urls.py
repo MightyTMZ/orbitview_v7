@@ -13,4 +13,5 @@ router.register(r'applications', views.OpportunityApplicationViewSet, basename='
 
 urlpatterns = [
     path('', include(router.urls)),
+    path("me/", views.ProfileDetailView.as_view()),
 ] 
